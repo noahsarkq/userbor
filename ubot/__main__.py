@@ -3,6 +3,7 @@ import asyncio
 from .vars import Var
 from pyrogram import idle
 from ubot import app
+from ubot.bot2 import bot2
 
 routes = web.RouteTableDef()
 loop = asyncio.get_event_loop()
@@ -30,6 +31,7 @@ async def start_services():
 
     await web.TCPSite(appx, bind_address, Var.PORT).start()
     await app.start()
+    await bot2.start()
     await idle()
 
 

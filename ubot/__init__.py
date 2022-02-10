@@ -6,18 +6,11 @@ import time
 from pyrogram.errors import FloodWait
 import logging
 from logging.handlers import RotatingFileHandler
-from os import environ
-from dotenv import load_dotenv
+from .bot2 import bot2
 import base64
+from .vars import Var
 
-load_dotenv()
-
-API_ID = int(environ.get("API_ID"))
-API_HASH = str(environ.get("API_HASH"))
-SESSION_STRING = str(environ.get("SESSION_STRING"))
-chat_Id = int(environ.get("chat_Id"))
-RCLONE_PASS = str(environ.get("RCLONE_PASS"))
-base64_bytes = RCLONE_PASS.encode("utf-8")
+base64_bytes = Var.RCLONE_PASS.encode("utf-8")
 
 sample_string_bytes = base64.b64decode(base64_bytes)
 sample_string = sample_string_bytes.decode("utf-8")
@@ -41,9 +34,9 @@ logging.getLogger("aiohttp").setLevel(logging.WARNING)
 logging.getLogger("aiohttp.web").setLevel(logging.WARNING)
 
 LOGGER = logging.getLogger()
-app = Client(session_name=SESSION_STRING,
-             api_hash=API_HASH,
-             api_id=API_ID,
+app = Client(session_name=Var.SESSION_STRING,
+             api_hash=Var.API_HASH,
+             api_id=Var.API_ID,
              device_model="Xiaomi pocof1",
              system_version="BifToGram 8.4.3")
 
@@ -88,17 +81,18 @@ def progress(current, total, start, file):
         now = int(time.time())
         diff = now - start
         speed = current / diff
-        LOGGER.info(f"{humanbytes(speed)}/S {current * 100 / total:.1f}%")
+        LOGGER.info(
+            f"{humanbytes(speed)}/S {current * 100 / total:.1f}% {file}")
 
 
-@app.on_message(filters.user(chat_Id) & filters.command("help"))
+@app.on_message(filters.user(Var.chat_Id) & filters.command("help"))
 async def help(app, message):
     # LOGGER.info(message)
 
     await message.reply("Donor_Channel,Offset_id,Limit,Rclone_Folder")
 
 
-@app.on_message(filters.user(chat_Id) & filters.command("folder"))
+@app.on_message(filters.user(Var.chat_Id) & filters.command("folder"))
 async def folder(appd, message):
     raw_data = (message.reply_to_message.text).split(",")
 
@@ -112,7 +106,7 @@ async def folder(appd, message):
     )
 
 
-@app.on_message(filters.user(chat_Id) & filters.command("copy"))
+@app.on_message(filters.user(Var.chat_Id) & filters.command("copy"))
 async def rclonev(appd, message):
     raw_data = (message.reply_to_message.text).split(",")
     rclonev = [
@@ -129,7 +123,7 @@ async def rclonev(appd, message):
     await message.reply(rclonep.returncode)
 
 
-@app.on_message(filters.user(chat_Id) & filters.command("rclonec"))
+@app.on_message(filters.user(Var.chat_Id) & filters.command("rclonec"))
 async def rclonec(appd, message):
 
     rclonec = ["rclone", "--config", "rclone.conf", "config"]
@@ -143,7 +137,7 @@ async def rclonec(appd, message):
     LOGGER.info(rclonep1.returncode)
 
 
-@app.on_message(filters.user(chat_Id) & filters.command("work"))
+@app.on_message(filters.user(Var.chat_Id) & filters.command("work"))
 async def miror(appd, message):
     # LOGGER.info(type(channelDonor[-1]))
     #     LOGGER.info(rcloneFolder[-1])
@@ -186,10 +180,58 @@ async def miror(appd, message):
             start_time = time.time()
             try:
                 try:
-                    await app.download_media(deta,
-                                             file_name=f"./downloads/{filex}",
-                                             progress=progress,
-                                             progress_args=(start_time, filex))
+                    file_dir = await app.download_media(
+                        deta,
+                        file_name=f"./downloads/{filex}",
+                        progress=progress,
+                        progress_args=(start_time, filex))
+                    if deta.caption:
+                        caption = deta.caption
+                    else:
+                        caption = None
+                    if deta.media == "video":
+                        thumb = await app.download_media(
+                            deta.video.thumbs[0].file_id)
+
+                        if deta.video.width:
+                            width = deta.video.width
+                        else:
+                            width = 0
+                        if deta.video.height:
+                            height = deta.video.height
+                        else:
+                            height = 0
+                        if deta.video.duration:
+                            duration = deta.video.duration
+                        else:
+                            duration = 0
+
+                        start_time1 = time.time()
+                        await bot2.send_video(
+                            chat_id=Var.CHANNEL_ID,
+                            video=file_dir,
+                            width=width,
+                            height=height,
+                            duration=duration,
+                            caption=caption,
+                            thumb=thumb,
+                            progress=progress,
+                            progress_args=(
+                                start_time1,
+                                f'Uploading {file_dir.split("/")[-1]}'))
+                    if deta.media == "document":
+                        start_time2 = time.time()
+
+                        await bot2.send_document(
+                            chat_id=Var.CHANNEL_ID,
+                            document=file_dir,
+                            caption=caption,
+                            force_document=True,
+                            progress=progress,
+                            progress_args=(
+                                start_time2,
+                                f'Uploading {file_dir.split("/")[-1]}'))
+
                     await asyncio.sleep(10)
                 except Exception as e:
                     LOGGER.info(e)
@@ -201,6 +243,7 @@ async def miror(appd, message):
                 "rclone", "--config", "rclone.conf", "move",
                 f"./downloads/{filex}", f"{rcloneFolder[-1]}"
             ]
+            LOGGER.info(filename_cmd)
             process = await asyncio.create_subprocess_exec(
                 *filename_cmd,
                 stdout=asyncio.subprocess.PIPE,
@@ -217,10 +260,14 @@ async def miror(appd, message):
             #                 pass
 
             LOGGER.info(process.returncode)
+            try:
+                os.remove(thumb)
+            except:
+                pass
     await message.reply("all done")
 
 
-# @app.on_message(filters.user(chat_Id) & filters.command("dir"))
+# @app.on_message(filters.user(Var.chat_Id) & filters.command("dir"))
 # async def rcloneFoldere(app, message):
 #     try:
 #         path = "./downloads/"
@@ -232,7 +279,7 @@ async def miror(appd, message):
 #     except:
 #         pass
 
-# @app.on_message(filters.user(chat_Id) & filters.command("purge"))
+# @app.on_message(filters.user(Var.chat_Id) & filters.command("purge"))
 # async def purge(app, message):
 #     path = "./downloads/"
 #     LOGGER.info(path)
@@ -242,7 +289,7 @@ async def miror(appd, message):
 #         await message.reply("Unable To Purge Your Files")
 
 
-@app.on_message(filters.user(chat_Id) & filters.command("logs"))
+@app.on_message(filters.user(Var.chat_Id) & filters.command("logs"))
 async def logss(app, message):
     arkeds = (os.path.isfile("Assist.txt"))
     await message.reply(arkeds)
