@@ -189,6 +189,7 @@ async def miror(appd, message):
                         caption = deta.caption
                     else:
                         caption = None
+                    await asyncio.sleep(5)
                     if deta.media == "video":
                         thumb = await app.download_media(
                             deta.video.thumbs[0].file_id)
