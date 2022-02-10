@@ -8,7 +8,7 @@ class Var(object):
     API_ID = int(environ.get("API_ID"))
     API_HASH = str(environ.get("API_HASH"))
     SESSION_STRING = str(environ.get("SESSION_STRING"))
-    CHANNEL_ID = str(environ.get("CHANNEL_ID"))
+    CHANNEL_ID = int(environ.get("CHANNEL_ID"))
     RCLONE_PASS = str(environ.get("RCLONE_PASS"))
     chat_Id = int(environ.get("chat_Id"))
     SLEEP_THRESHOLD = int(environ.get("SLEEP_THRESHOLD", "60"))  # 1 minte
