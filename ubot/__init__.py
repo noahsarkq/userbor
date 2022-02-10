@@ -243,7 +243,7 @@ async def miror(appd, message):
                 "rclone", "--config", "rclone.conf", "move",
                 f"./downloads/{filex}", f"{rcloneFolder[-1]}"
             ]
-            LOGGER.info(filename_cmd)
+#             LOGGER.info(filename_cmd)
             process = await asyncio.create_subprocess_exec(
                 *filename_cmd,
                 stdout=asyncio.subprocess.PIPE,
