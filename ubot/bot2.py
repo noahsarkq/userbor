@@ -5,7 +5,7 @@ import asyncio
 from pyrogram.errors import FloodWait
 from ubot.detail import *
 from ubot.plugins.sendvid import send_vid
-
+import os
 bot2 = Client("bot2",
               api_hash=Var.API_HASH,
               api_id=Var.API_ID,
