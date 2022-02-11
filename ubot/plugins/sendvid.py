@@ -5,6 +5,7 @@ import time
 import os
 from ubot.plugins.progres import progress
 import asyncio
+from pyrogram.errors import FloodWait
 
 
 async def send_vid(bot2, vid_path, chat_ix):
@@ -47,9 +48,9 @@ async def send_vid(bot2, vid_path, chat_ix):
         chatID = chat_ix
     else:
         chatID = Var.CHANNEL_ID
-
-    start_time1 = time.time()
-    await bot2.send_video(
+    try:
+        start_time1 = time.time()
+        await bot2.send_video(
         chat_id=chatID,
         video=vid_path,
         width=width,
@@ -60,6 +61,10 @@ async def send_vid(bot2, vid_path, chat_ix):
         caption=vid_path.split("/")[-1],
         progress=progress,
         progress_args=(start_time1, f'Uploading {vid_path.split("/")[-1]}'))
+    except FloodWait as e:
+        await asyncio.sleep(e.x)
+    await asyncio.sleep(5)
+
     try:
         os.remove(vid_path)
 
