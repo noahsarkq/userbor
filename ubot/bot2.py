@@ -83,8 +83,10 @@ async def txtdl(_, m: Message):
             await m.reply_text("Invalid file input.")
             os.remove(x)
             return
-    else:
+    elif m.reply_to_message.text:
         list_data = m.reply_to_message.text.split("\n")
+    else: 
+        break
         
         
     for psdata in list_data:
