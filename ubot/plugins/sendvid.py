@@ -29,6 +29,7 @@ async def send_vid(bot2, vid_path, chat_ix):
     except Exception as e:
         logging.info(e)
         thumb = None
+    logging.info(f"width >> {width} height >> {height} Duration >> {duration}")
     if chat_ix != 0:
         chatID = chat_ix
     else:
