@@ -59,7 +59,7 @@ async def copy_messages(_, m: Message):
 async def txtdl(bot: bot2, m: Message):
     msg=m.reply_to_message
     logging.info(msg)
-    if m.reply_to_message.:
+    if m.reply_to_message.text:
         list_data = m.reply_to_message.text.split("\n")
     elif mmsg.document["mime_type"] == "text/html":
         x= await msg.download()
