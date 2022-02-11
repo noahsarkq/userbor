@@ -28,6 +28,7 @@ async def copy_messages(_, m: Message):
     from_chatID, to_chatId, num1, num2 = m.reply_to_message.text.split(",")
     for message_id in range(int(num1), int(num2) + 1):
         if stopCopy[-1] == 1:
+            await m.reply(f"Copied Till {message_id-1}")
             break
         try:
             await bot2.copy_message(chat_id=int(f"-100{to_chatId}"),
