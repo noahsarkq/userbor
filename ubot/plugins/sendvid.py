@@ -1,10 +1,10 @@
 import logging
 from ubot.vars import Var
 from telegram_upload import files
-import subprocess
 import time
 import os
 from ubot.plugins.progres import progress
+import asyncio
 
 
 async def send_vid(bot2, vid_path, chat_ix):
@@ -19,16 +19,29 @@ async def send_vid(bot2, vid_path, chat_ix):
         width = 1280
         height = 720
     try:
-        datax = f'ffmpeg -i "{vid_path}" -ss {int(duration/2) if int(duration)<50 else "00:01:00"} -vframes 1 "{vid_path}.jpg"'
+        filename_cmd = [
+            "ffmpeg", "-i", f"{vid_path}", "-ss",
+            f'{int(duration/2) if int(duration)<50 else "00:01:00"}',
+            '-vframes', '1', f"{vid_path}.jpg"
+        ]
 
-        subprocess.run(data=datax, shell=True)
+        process = await asyncio.create_subprocess_exec(
+            *filename_cmd,
+            # stdout must a pipe to be accessible as process.stdout
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        # Wait for the subprocess to finish
+        stdout, stderr = await process.communicate()
+        st1 = stderr.decode().strip()
+        out1 = stdout.decode().strip()
         thumb = f"{vid_path}.jpg"
 
     except Exception as e:
         logging.info(e)
-        thumb = None
+
     logging.info(
-        f"width >> {width} height >> {height} Duration >> {duration} file_path >> {vid_path} duration >> {duration} \n data >> {datax}"
+        f"width >> {width} height >> {height} Duration >> {duration} file_path >> {vid_path} duration >> {duration} \n data >> {filename_cmd}"
     )
     if chat_ix != 0:
         chatID = chat_ix
