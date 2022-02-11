@@ -62,7 +62,7 @@ async def txtdl(_, m: Message):
    # msg = await bot2.get_messages(msg.chat.id, msg.message_id)
     #print(msg)
     
-    if msg.document["mime_type"] is not None:
+    if msg.document is not None:
         x= await msg.download()
         
 
