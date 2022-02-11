@@ -35,6 +35,7 @@ async def send_vid(bot2, vid_path, chat_ix):
         height=height,
         duration=duration,
         supports_streaming=True,
+        thumb=thumb,
         caption=vid_path.split("/")[-1],
         progress=progress,
         progress_args=(start_time1, f'Uploading {vid_path.split("/")[-1]}'))
