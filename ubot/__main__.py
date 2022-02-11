@@ -1,6 +1,6 @@
 from aiohttp import web
 import asyncio
-from .vars import Var
+from ubot.vars import Var
 from pyrogram import idle
 from ubot import app
 from ubot.bot2 import bot2

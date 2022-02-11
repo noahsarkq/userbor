@@ -1,9 +1,10 @@
-from email import message
 from pyrogram import Client, filters
 from .vars import Var
 from pyrogram.types import Message
 import asyncio
 from pyrogram.errors import FloodWait
+from ubot.detail import *
+from ubot.plugins.sendvid import send_vid
 
 bot2 = Client("bot2",
               api_hash=Var.API_HASH,
@@ -11,11 +12,18 @@ bot2 = Client("bot2",
               bot_token=Var.BOT_TOKEN)
 
 stopCopy = [0]
+chat_ix = [0]
 
 
 @bot2.on_message(filters.user(Var.chat_Id) & filters.command("help"))
 async def help(_, m: Message):
     await m.reply("from_chatID, to_chatId, num1, num2 \n \n To stop Copy '1'")
+
+
+@bot2.on_message(filters.user(Var.chat_Id) & filters.command("chatid"))
+async def help(_, m: Message):
+    chat_ix.append(int(m.reply_to_message.text))
+    await m.reply(chat_ix[-1])
 
 
 @bot2.on_message(filters.user(Var.chat_Id) & filters.command("stcopy"))
@@ -42,3 +50,21 @@ async def copy_messages(_, m: Message):
                 await m.reply(f"Flood wait Occured for {e.x}")
                 pass
         await m.reply("All Copied")
+
+
+@bot2.on_message(filters.chat(Var.chat_Id) & filters.command("txtdl"))
+async def txtdl(_, m: Message):
+    list_data = m.reply_to_message.text.split("\n")
+    print(list_data)
+    for psdata in list_data:
+
+        if "," in psdata:
+            file_path, link = psdata.split(",")
+            file_name = await filenamegen(link, file_path)
+        else:
+            file_name = await filenamegen(psdata)
+            link = psdata
+        file_path = f"./downloads/{file_name}"
+        await yt_dl(file_path, link)
+        await send_vid(bot2, file_path, chat_ix[-1])
+        await m.reply(f"Success fully uploaded {file_name}")

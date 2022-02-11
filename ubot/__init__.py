@@ -9,6 +9,7 @@ from logging.handlers import RotatingFileHandler
 from .bot2 import bot2
 import base64
 from .vars import Var
+from ubot.plugins.progres import progress
 
 base64_bytes = Var.RCLONE_PASS.encode("utf-8")
 
@@ -34,6 +35,7 @@ logging.getLogger("aiohttp").setLevel(logging.WARNING)
 logging.getLogger("aiohttp.web").setLevel(logging.WARNING)
 
 LOGGER = logging.getLogger()
+logging = LOGGER
 app = Client(session_name=Var.SESSION_STRING,
              api_hash=Var.API_HASH,
              api_id=Var.API_ID,
@@ -44,45 +46,6 @@ channelDonor = []
 rcloneFolder = []
 offset_data = []
 limitTele = []
-
-
-class Timer:
-
-    def __init__(self, time_between=5):
-        self.start_time = time.time()
-        self.time_between = time_between
-
-    def can_send(self):
-        if time.time() > (self.start_time + self.time_between):
-            self.start_time = time.time()
-            return True
-        return False
-
-
-timer = Timer()
-
-
-def humanbytes(size):
-    # https://stackoverflow.com/a/49361727/4723940
-    # 2**10 = 1024
-    if not size:
-        return ""
-    power = 2**10
-    n = 0
-    Dic_powerN = {0: ' ', 1: 'Ki', 2: 'Mi', 3: 'Gi', 4: 'Ti'}
-    while size > power:
-        size /= power
-        n += 1
-    return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
-
-
-def progress(current, total, start, file):
-    if timer.can_send():
-        now = int(time.time())
-        diff = now - start
-        speed = current / diff
-        LOGGER.info(
-            f"{humanbytes(speed)}/S {current * 100 / total:.1f}% {file}")
 
 
 @app.on_message(filters.user(Var.chat_Id) & filters.command("help"))
@@ -244,7 +207,7 @@ async def miror(appd, message):
                 "rclone", "--config", "rclone.conf", "move",
                 f"./downloads/{filex}", f"{rcloneFolder[-1]}"
             ]
-#             LOGGER.info(filename_cmd)
+            #             LOGGER.info(filename_cmd)
             process = await asyncio.create_subprocess_exec(
                 *filename_cmd,
                 stdout=asyncio.subprocess.PIPE,
