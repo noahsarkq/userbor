@@ -13,7 +13,7 @@ bot2 = Client("bot2",
 
 stopCopy = [0]
 chat_ix = [0]
-
+breaker=[0]
 
 @bot2.on_message(filters.user(Var.chat_Id) & filters.command("help"))
 async def help(_, m: Message):
@@ -24,7 +24,10 @@ async def help(_, m: Message):
 async def help(_, m: Message):
     chat_ix.append(int(m.reply_to_message.text))
     await m.reply(chat_ix[-1])
-
+@bot2.on_message(filters.user(Var.chat_Id) & filters.command("break"))
+async def help(_, m: Message):
+    breaker.append(int(m.reply_to_message.text))
+    await m.reply(breaker[-1])
 
 @bot2.on_message(filters.user(Var.chat_Id) & filters.command("stcopy"))
 async def stop_copy(_, m: Message):
@@ -53,10 +56,38 @@ async def copy_messages(_, m: Message):
 
 
 @bot2.on_message(filters.chat(Var.chat_Id) & filters.command("txtdl"))
-async def txtdl(_, m: Message):
-    list_data = m.reply_to_message.text.split("\n")
-    print(list_data)
+async def txtdl(bot: bot2, m: Message):
+    if m.reply_to_message:
+        list_data = m.reply_to_message.text.split("\n")
+    else:
+        editable = await m.reply_text("Send txt file**")
+        input: Message = await bot.listen(editable.chat.id)
+        x = await input.download()
+        await input.delete(True)
+
+        path = f"./downloads/{m.chat.id}"
+
+        try:    
+            with open(x, "r") as f:
+                content = f.read()
+            content = content.split("\n")
+            list_data = []
+            
+            for i in content:
+  
+                links.append(i)
+            os.remove(x)
+            # print(len(links))
+        except:
+            await m.reply_text("Invalid file input.")
+            os.remove(x)
+            return
+
+        
+        
     for psdata in list_data:
+        if breaker[-1]==1:
+            break
 
         if "," in psdata:
             file_path, link = psdata.split(",")
