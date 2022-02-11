@@ -62,7 +62,7 @@ async def txtdl(_, m: Message):
    # msg = await bot2.get_messages(msg.chat.id, msg.message_id)
     #print(msg)
     
-    if msg.document["mime_type"] not None:
+    if msg.document["mime_type"] is not None:
         x= await msg.download()
         
 
@@ -83,7 +83,7 @@ async def txtdl(_, m: Message):
             await m.reply_text("Invalid file input.")
             os.remove(x)
             return
-    elif m.reply_to_message.text not None:
+    elif m.reply_to_message.text is not None:
         list_data = m.reply_to_message.text.split("\n")
     else: 
         return
