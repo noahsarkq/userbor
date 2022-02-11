@@ -1,8 +1,9 @@
+import logging
 from ubot.vars import Var
 from telegram_upload import files
-
+import subprocess
 import time
-
+import os
 from ubot.plugins.progres import progress
 
 
@@ -13,12 +14,17 @@ async def send_vid(bot2, vid_path, chat_ix):
         width = atr[0].w
         height = atr[0].h
     except:
-        duration = 0
+        if duration == None:
+            duration = 0
         width = 1280
         height = 720
     try:
 
-        thumb = files.get_video_thumb(vid_path, None, width)
+        subprocess.run(
+            data=
+            f'ffmpeg -i "{vid_path}" -ss {int(duration/2) if duration!=0 else "00:01:00"} -vframes 1 "{vid_path}.jpg"',
+            shell=True)
+        thumb = f"{vid_path}.jpg"
 
     except:
         thumb = None
@@ -39,3 +45,8 @@ async def send_vid(bot2, vid_path, chat_ix):
         caption=vid_path.split("/")[-1],
         progress=progress,
         progress_args=(start_time1, f'Uploading {vid_path.split("/")[-1]}'))
+    try:
+        os.remove(vid_path)
+        os.remove(thumb)
+    except Exception as e:
+        logging.info(e)
