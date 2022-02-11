@@ -57,10 +57,12 @@ async def copy_messages(_, m: Message):
 
 @bot2.on_message(filters.chat(Var.chat_Id) & filters.command("txtdl"))
 async def txtdl(bot: bot2, m: Message):
-    if m.reply_to_message.media!="document":
+    msg=m.reply_to_message
+    logging.info(msg)
+    if m.reply_to_message.:
         list_data = m.reply_to_message.text.split("\n")
-    elif m.reply_to_message.media=="document":
-        x= await m.reply_to_message.download()
+    elif mmsg.document["mime_type"] == "text/html":
+        x= await msg.download()
         
 
         
