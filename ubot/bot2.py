@@ -1,3 +1,4 @@
+from email import message
 from pyrogram import Client, filters
 from .vars import Var
 from pyrogram.types import Message
@@ -11,8 +12,8 @@ bot2 = Client("bot2",
 
 
 @bot2.on_message(filters.user(Var.chat_Id) & filters.command("help"))
-async def help(_, message):
-    await message.reply("from_chatID, to_chatId, num1, num2")
+async def help(_, m: Message):
+    await m.reply("from_chatID, to_chatId, num1, num2")
 
 
 @bot2.on_message(filters.user(Var.chat_Id) & filters.command("copy"))
@@ -26,4 +27,6 @@ async def copy_messages(_, m: Message):
             await asyncio.sleep(4)
         except FloodWait as e:
             await asyncio.sleep(e.x)
+            await m.reply(f"Flood wait Occured for {e.x}")
             pass
+    await m.reply("All Copied")
