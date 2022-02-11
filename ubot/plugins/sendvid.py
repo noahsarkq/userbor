@@ -22,7 +22,7 @@ async def send_vid(bot2, vid_path, chat_ix):
     try:
         filename_cmd = [
             "ffmpeg", "-i", f"{vid_path}", "-ss",
-            f'{int(duration/2) if int(duration)<50 else "00:01:00"}',
+            f'{int(duration/2) if int(duration)<=60 else "00:01:00"}',
             '-vframes', '1', f"{vid_path}.jpg"
         ]
 
