@@ -86,7 +86,7 @@ async def txtdl(_, m: Message):
     elif m.reply_to_message.text:
         list_data = m.reply_to_message.text.split("\n")
     else: 
-        break
+        return
         
         
     for psdata in list_data:
