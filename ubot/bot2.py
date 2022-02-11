@@ -20,8 +20,8 @@ async def copy_messages(_, m: Message):
     from_chatID, to_chatId, num1, num2 = m.reply_to_message.text.split(",")
     for message_id in range(int(num1), int(num2) + 1):
         try:
-            await bot2.copy_message(chat_id=int(to_chatId),
-                                    from_chat_id=int(from_chatID),
+            await bot2.copy_message(chat_id=int(f"-100{to_chatId}"),
+                                    from_chat_id=int(f"-100{from_chatID}"),
                                     message_id=message_id)
             await asyncio.sleep(4)
         except FloodWait as e:
