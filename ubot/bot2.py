@@ -58,10 +58,9 @@ async def copy_messages(_, m: Message):
 @bot2.on_message(filters.chat(Var.chat_Id) & filters.command("txtdl"))
 async def txtdl(bot: bot2, m: Message):
     msg=m.reply_to_message
-    logging.info(msg)
-    if m.reply_to_message.text:
-        list_data = m.reply_to_message.text.split("\n")
-    elif msg.document["mime_type"] == "text/html":
+    
+    
+    if msg.document["mime_type"] == "text/html":
         x= await msg.download()
         
 
@@ -75,14 +74,15 @@ async def txtdl(bot: bot2, m: Message):
             
             for i in content:
   
-                links.append(i)
+                list_data.append(i)
             os.remove(x)
             # print(len(links))
         except:
             await m.reply_text("Invalid file input.")
             os.remove(x)
             return
-
+    else:
+        list_data = m.reply_to_message.text.split("\n")
         
         
     for psdata in list_data:
