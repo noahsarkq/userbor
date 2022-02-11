@@ -59,10 +59,10 @@ async def copy_messages(_, m: Message):
 async def txtdl(_, m: Message):
     msg=m.reply_to_message
     
-    msg = await bot2.get_messages(msg.chat.id, msg.message_id)
-    print(msg)
+   # msg = await bot2.get_messages(msg.chat.id, msg.message_id)
+    #print(msg)
     
-    if msg.document["mime_type"]:
+    if msg.document["mime_type"] not None:
         x= await msg.download()
         
 
@@ -83,7 +83,7 @@ async def txtdl(_, m: Message):
             await m.reply_text("Invalid file input.")
             os.remove(x)
             return
-    elif m.reply_to_message.text:
+    elif m.reply_to_message.text not None:
         list_data = m.reply_to_message.text.split("\n")
     else: 
         return
