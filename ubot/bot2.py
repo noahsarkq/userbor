@@ -90,6 +90,7 @@ async def txtdl(_, m: Message):
         
         
     for psdata in list_data:
+      try:
         if breaker[-1]==1:
             break
 
@@ -104,3 +105,6 @@ async def txtdl(_, m: Message):
         
         await send_vid(bot2, file_path, chat_ix[-1])
         #await m.reply(f"Success fully uploaded {file_name}")
+      except Exception as e:
+        logging.info(e)
+        pass
