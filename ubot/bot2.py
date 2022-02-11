@@ -57,15 +57,13 @@ async def copy_messages(_, m: Message):
 
 @bot2.on_message(filters.chat(Var.chat_Id) & filters.command("txtdl"))
 async def txtdl(bot: bot2, m: Message):
-    if m.reply_to_message:
+    if m.reply_to_message.media!="document":
         list_data = m.reply_to_message.text.split("\n")
-    else:
-        editable = await m.reply_text("Send txt file**")
-        input: Message = await bot.listen(editable.chat.id)
-        x = await input.download()
-        await input.delete(True)
+    elif m.reply_to_message.media=="document":
+        x= await m.reply_to_message.download()
+        
 
-        path = f"./downloads/{m.chat.id}"
+        
 
         try:    
             with open(x, "r") as f:
