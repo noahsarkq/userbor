@@ -19,17 +19,17 @@ async def send_vid(bot2, vid_path, chat_ix):
         width = 1280
         height = 720
     try:
+        datax = f'ffmpeg -i "{vid_path}" -ss {int(duration/2) if int(duration)<50 else "00:01:00"} -vframes 1 "{vid_path}.jpg"'
 
-        subprocess.run(
-            data=
-            f'ffmpeg -i "{vid_path}" -ss {int(duration/2) if duration!=0 else "00:01:00"} -vframes 1 "{vid_path}.jpg"',
-            shell=True)
+        subprocess.run(data=datax, shell=True)
         thumb = f"{vid_path}.jpg"
 
     except Exception as e:
         logging.info(e)
         thumb = None
-    logging.info(f"width >> {width} height >> {height} Duration >> {duration}")
+    logging.info(
+        f"width >> {width} height >> {height} Duration >> {duration} file_path >> {vid_path} duration >> {duration} \n data >> {datax}"
+    )
     if chat_ix != 0:
         chatID = chat_ix
     else:
