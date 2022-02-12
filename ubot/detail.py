@@ -52,3 +52,4 @@ async def yt_dl(vid_path, link):
     # logging.info("---------------------")
 
     logging.info(process.returncode)
+    return process.returncode
