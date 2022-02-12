@@ -4,7 +4,7 @@ from ubot.vars import Var
 from pyrogram import idle
 from ubot import app
 from ubot.bot2 import bot2
-
+from ubot.plugins.keepalive import ping_server
 routes = web.RouteTableDef()
 loop = asyncio.get_event_loop()
 
@@ -25,6 +25,7 @@ async def root_route_handler(request):
 async def start_services():
     print("----------------------------- DONE -----------------------------")
     print()
+    asyncio.create_task(ping_server())
     appx = web.AppRunner(await web_server())
     await appx.setup()
     bind_address = "0.0.0.0" if Var.ON_HEROKU else Var.BIND_ADDRESS
