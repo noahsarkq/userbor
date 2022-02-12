@@ -16,7 +16,7 @@ class Var(object):
     
     BOT_TOKEN = str(environ.get("BOT_TOKEN"))
     BIND_ADDRESS = str(environ.get("WEB_SERVER_BIND_ADDRESS", "0.0.0.0"))
-    PING_INTERVAL = int(environ.get("PING_INTERVAL", "300"))  # 5 minutes
+    PING_INTERVAL = int(environ.get("PING_INTERVAL", "600"))  # 10 minutes
     HAS_SSL = environ.get("HAS_SSL", False)
     HAS_SSL = True if str(HAS_SSL).lower() == "true" else False
     NO_PORT = environ.get("NO_PORT", False)
