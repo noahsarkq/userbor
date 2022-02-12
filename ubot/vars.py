@@ -13,10 +13,10 @@ class Var(object):
     chat_Id = int(environ.get("chat_Id"))
     SLEEP_THRESHOLD = int(environ.get("SLEEP_THRESHOLD", "60"))  # 1 minte
     PORT = int(environ.get("PORT", 8080))
-    PING_INTERVAL = int(environ.get("PING_INTERVAL", "300"))
+    
     BOT_TOKEN = str(environ.get("BOT_TOKEN"))
     BIND_ADDRESS = str(environ.get("WEB_SERVER_BIND_ADDRESS", "0.0.0.0"))
-    PING_INTERVAL = int(environ.get("PING_INTERVAL", "1200"))  # 20 minutes
+    PING_INTERVAL = int(environ.get("PING_INTERVAL", "300"))  # 5 minutes
     HAS_SSL = environ.get("HAS_SSL", False)
     HAS_SSL = True if str(HAS_SSL).lower() == "true" else False
     NO_PORT = environ.get("NO_PORT", False)
