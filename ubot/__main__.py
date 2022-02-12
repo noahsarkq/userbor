@@ -29,7 +29,7 @@ async def root_route_handler(request):
 async def start_services():
     print("----------------------------- DONE -----------------------------")
     print()
-    asyncio.create_task(ping_server())
+    
     appx = web.AppRunner(await web_server())
     await appx.setup()
     bind_address = "0.0.0.0" if Var.ON_HEROKU else Var.BIND_ADDRESS
@@ -37,6 +37,7 @@ async def start_services():
     await web.TCPSite(appx, bind_address, Var.PORT).start()
     #await app.start()
     await bot2.start()
+    asyncio.create_task(ping_server())
     await idle()
 
 
