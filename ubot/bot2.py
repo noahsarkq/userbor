@@ -105,7 +105,9 @@ async def txtdl(_, m: Message):
             continue
       try:
             file_path = f"./downloads/{file_name}"
-            await yt_dl(file_path, link)
+            dax=await yt_dl(file_path, link)
+            if dax !=0:
+                continue
         
             await send_vid(bot2, file_path, chat_ix[-1])
             #await m.reply(f"Success fully uploaded {file_name}")
