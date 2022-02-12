@@ -7,11 +7,8 @@ from ubot import app
 from ubot.bot2 import bot2
 from ubot.plugins.keepalive import ping_server
 routes = web.RouteTableDef()
-if sys.version_info[1] > 9:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-else:
-    loop = asyncio.get_event_loop()
+
+loop = asyncio.get_event_loop()
 
 async def web_server():
     web_app = web.Application(client_max_size=30000000)
