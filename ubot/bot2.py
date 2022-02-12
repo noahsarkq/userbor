@@ -100,11 +100,15 @@ async def txtdl(_, m: Message):
         else:
             file_name = await filenamegen(psdata)
             link = psdata
-        file_path = f"./downloads/{file_name}"
-        await yt_dl(file_path, link)
-        
-        await send_vid(bot2, file_path, chat_ix[-1])
-        #await m.reply(f"Success fully uploaded {file_name}")
       except Exception as e:
-        logging.info(e)
-        pass
+            logging.info(e)
+            continue
+      try:
+            file_path = f"./downloads/{file_name}"
+            await yt_dl(file_path, link)
+        
+            await send_vid(bot2, file_path, chat_ix[-1])
+            #await m.reply(f"Success fully uploaded {file_name}")
+      except Exception as e:
+            logging.info(e)
+            pass
