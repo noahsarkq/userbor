@@ -65,6 +65,7 @@ async def send_vid(bot2, vid_path, chat_ix):
     except FloodWait as e:
         await asyncio.sleep(e.x) 
         pass
+    global timex
     dx=int(time.time()-timex)
     logging.info(dx)
     if dx <10:
