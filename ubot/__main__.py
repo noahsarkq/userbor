@@ -33,12 +33,13 @@ async def start_services():
     await bot2.start()
     
     appx = web.AppRunner(await web_server())
+    asyncio.create_task(ping_server())
     await appx.setup()
     bind_address = "0.0.0.0" if Var.ON_HEROKU else Var.BIND_ADDRESS
 
     await web.TCPSite(appx, bind_address, Var.PORT).start()
     
-    asyncio.create_task(ping_server())
+    
     await idle()
 
 
